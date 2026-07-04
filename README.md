@@ -1,13 +1,16 @@
 # backend-vacation-week1-team4
 백엔드 방학 1주차 과제 4조
 
+폴더 기본 구조
+
+```text
 src/main/java/mutsa.team4
 ├── controller
 ├── service
 ├── repository
 ├── domain
 ├── dto
-└── global (💡 새로 추가할 공통 패키지)
+└── global
     ├── config
     ├── error
     └── common
