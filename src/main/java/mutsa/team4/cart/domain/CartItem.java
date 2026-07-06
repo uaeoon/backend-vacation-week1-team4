@@ -1,11 +1,8 @@
 package mutsa.team4.cart.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import mutsa.team4.cart.code.CartErrorCode;
-import mutsa.team4.global.apiPayload.code.status.GeneralErrorCode;
 import mutsa.team4.global.exception.GeneralException;
 
 import java.util.ArrayList;
@@ -13,6 +10,9 @@ import java.util.List;
 
 @Getter
 @Entity
+//service에서 사용하기 위한 builder 어노테이션 추가
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +43,7 @@ public class CartItem {
         return 0L; //product 도메인 연동 후 구현
     }
 
-    public void undateQuantity(Long quantity){
+    public void updateQuantity(Long quantity){
         if(quantity < 1){
             throw new GeneralException(CartErrorCode.INVALID_QUANTITY);
         }
