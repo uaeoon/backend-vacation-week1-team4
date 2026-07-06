@@ -24,7 +24,8 @@ public class CartServiceImpl implements CartService{
 
     //장바구니 조회
     @Override
-    @Transactional(readOnly = true) //읽기 전용 작업
+    //추후 멤버 도메인 생기면 읽기전용으로 바꾸기(현재 service 레이어에서 카트 없으면 생성해주는 로직 있어서 충돌남
+//    @Transactional(readOnly = true)
     public CartResponseDto.CartInfoResponseDto getCart(Long memberId) {
         Cart cart = cartRepository.findByMemberId(memberId)
                 .orElseGet(() -> cartRepository.save(Cart.createCart(memberId)));
