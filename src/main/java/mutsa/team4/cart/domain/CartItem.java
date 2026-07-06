@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mutsa.team4.cart.code.CartErrorCode;
 import mutsa.team4.global.apiPayload.code.status.GeneralErrorCode;
 import mutsa.team4.global.exception.GeneralException;
 
@@ -37,25 +38,14 @@ public class CartItem {
     @Column(nullable = false)
     private Long quantity;
 
-    public void updateQuantity(Long quantity) {
-        this.quantity = quantity;
-    }
-
     public Long getExpectPrice(){
         return 0L; //product 도메인 연동 후 구현
     }
 
-    //수량 증가 버튼 대응
-    public void increaseQuantity() {
-        this.quantity+=1;
-    }
-    //수량 감소 버튼 대응
-    public void decreaseQuantity() {
-        if(this.quantity == 1) {
-            //custom exception으로 추후 수정
-            throw new GeneralException(GeneralErrorCode.BAD_REQUEST);
-
+    public void undateQuantity(Long quantity){
+        if(quantity < 1){
+            throw new GeneralException(CartErrorCode.INVALID_QUANTITY);
         }
-        this.quantity-=1;
+        this.quantity = quantity;
     }
 }
