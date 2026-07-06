@@ -1,20 +1,25 @@
 # backend-vacation-week1-team4
 백엔드 방학 1주차 과제 4조
 
+##공통 세팅 파일 수정 시에 선수정 X, 먼저 말하기!!!!
+
 ### 폴더 기본 구조
 
 ```text
 src/main/java/mutsa.team4
-├── controller
-├── service
-├── repository
-├── domain
-├── dto
-└── global
-    ├── config
-    ├── error
-    └── common
+├── 기능
+    ├── code(errorCode)
+    ├── controller
+    └── domain
+    └── dto
+    └── serivce
+    └── repository
 ```
+
+### 기능별 에러코드 양식
+(기능)(에러타입별 번호)_(에러번호 형식)
+Ex) CART400_1
+대문자 통일
 
 ### Branch Convention
 
