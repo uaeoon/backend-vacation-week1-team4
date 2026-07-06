@@ -38,6 +38,7 @@ public class CartItem {
     @Column(nullable = false)
     private Long quantity;
 
+가    //수량 + 옵션 고려한 메뉴당 가격
     public Long getExpectPrice(){
         return 0L; //product 도메인 연동 후 구현
     }
