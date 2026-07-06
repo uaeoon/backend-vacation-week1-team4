@@ -1,13 +1,13 @@
 package mutsa.team4.credit.service;
 
 import lombok.RequiredArgsConstructor;
+import mutsa.team4.credit.code.CreditErrorCode;
 import mutsa.team4.credit.domain.Credit;
 import mutsa.team4.credit.domain.CreditHistory;
 import mutsa.team4.credit.dto.CreditChargeRequestDto;
 import mutsa.team4.credit.dto.CreditResponseDto;
 import mutsa.team4.credit.repository.CreditHistoryRepository;
 import mutsa.team4.credit.repository.CreditRepository;
-import mutsa.team4.global.apiPayload.code.status.GeneralErrorCode;
 import mutsa.team4.global.exception.GeneralException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,8 @@ public class CreditService {
 
     private Credit findCreditByMemberId(Long memberId) {
         return creditRepository.findByMember_MemberId(memberId)
-                .orElseThrow(() -> new GeneralException(GeneralErrorCode.NOT_FOUND)
+                .orElseThrow(() ->
+                        new GeneralException(CreditErrorCode.CREDIT_NOT_FOUND)
                 );
     }
 }

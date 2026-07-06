@@ -2,6 +2,8 @@ package mutsa.team4.credit.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import mutsa.team4.credit.code.CreditErrorCode;
+import mutsa.team4.global.exception.GeneralException;
 
 import java.util.Set;
 
@@ -38,7 +40,9 @@ public class Credit {
 
     public void charge(long amount) {
         if (!CHARGE_AMOUNTS.contains(amount)) {
-            throw new IllegalArgumentException("충전할 수 없는 금액입니다.");
+            throw new GeneralException(
+                    CreditErrorCode.INVALID_CHARGE_AMOUNT
+            );
         }
 
         balance = Math.addExact(balance, amount);
@@ -46,10 +50,14 @@ public class Credit {
 
     public void use(long amount) {
         if (amount <= 0) {
-            throw new IllegalArgumentException("사용 금액은 0보다 커야 합니다.");
+            throw new GeneralException(
+                    CreditErrorCode.INVALID_USE_AMOUNT
+            );
         }
         if (balance < amount) {
-            throw new IllegalStateException("크레딧 잔액이 부족합니다.");
+            throw new GeneralException(
+                    CreditErrorCode.INSUFFICIENT_BALANCE
+            );
         }
 
         balance -= amount;
