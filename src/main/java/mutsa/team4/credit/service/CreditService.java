@@ -42,7 +42,7 @@ public class CreditService {
     }
 
     private Credit findCreditByMemberId(Long memberId) {
-        return creditRepository.findByMember_MemberId(memberId)
+        return creditRepository.findByMemberId(memberId) // 회원가입 및 로그인 로직 구현 후 수정 예정
                 .orElseThrow(() ->
                         new GeneralException(CreditErrorCode.CREDIT_NOT_FOUND)
                 );
