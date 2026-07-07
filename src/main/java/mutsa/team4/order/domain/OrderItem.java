@@ -23,6 +23,8 @@ public class OrderItem {
     @Column(nullable = false)
     private Long menuId;
     @Column(nullable = false)
+    private String menuName;
+    @Column(nullable = false)
     private Long quantity;
     @Column(nullable = false)
     private Long orderPrice;
@@ -31,17 +33,18 @@ public class OrderItem {
     @CollectionTable(name = "order_item_option",
             joinColumns = @JoinColumn(name = "order_item_id")
     )
-    @Column(name = "option_id")
+    @Column(name = "option_name")
     @Builder.Default
-    private List<Long> selectedOptions = new ArrayList<>();
+    private List<String> selectedOptions = new ArrayList<>();
 
     public void setOrder(Order order) {
         this.order = order;
     }
 
-    public static OrderItem createOrderItem(Long menuId, Long quantity, Long orderPrice, List<Long> selectedOptions) {
+    public static OrderItem createOrderItem(Long menuId,String menuName, Long quantity, Long orderPrice, List<String> selectedOptions) {
         OrderItem orderItem = OrderItem.builder()
                 .menuId(menuId)
+                .menuName(menuName)
                 .quantity(quantity)
                 .orderPrice(orderPrice)
                 .selectedOptions(selectedOptions)
