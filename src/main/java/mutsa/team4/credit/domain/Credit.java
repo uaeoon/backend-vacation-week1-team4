@@ -20,18 +20,18 @@ public class Credit {
     @Column(nullable = false)
     private long balance;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false, unique = true)
-    private Member member;
+    // 회원가입 및 로그인 로직 구현 후 Member Domain과 매칭 예정
+    @Column(nullable = false, unique = true)
+    private Long memberId;
 
-    public static Credit create(Member member) {
-        if (member == null) {
+    public static Credit create(Long memberId) { // memberId 대신 member로 수정 예정
+        if (memberId == null) {
             throw new IllegalArgumentException("회원은 필수입니다.");
         }
 
         return Credit.builder()
                 .balance(0L)
-                .member(member)
+                .memberId(memberId)
                 .build();
     }
 
