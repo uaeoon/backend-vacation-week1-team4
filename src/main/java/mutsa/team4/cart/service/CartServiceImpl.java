@@ -33,20 +33,10 @@ public class CartServiceImpl implements CartService{
 
         //CartItem 꺼내서 Dto로 포장
         List<CartResponseDto.CartItemInfoResponseDto> cartItems = cart.getCartItems().stream()
-                .map(item -> CartResponseDto.CartItemInfoResponseDto.builder()
-                        .cartItemId(item.getId())
-                        .menuId(item.getMenuId())
-                        .menuName("임시 메뉴 이름입니다.")//menu 도메인 연결시에 수정
-                        .quantity(item.getQuantity())
-                        .expectPrice(item.getExpectPrice())
-                        .selectedOptionsNames(Collections.emptyList()) //도메인 연결 후 수정
-                        .build())
+                .map(item -> CartResponseDto.CartItemInfoResponseDto.of(item,"임시 메뉴 이름", Collections.emptyList()))
                 .collect(Collectors.toList());
         //최종 response 리턴
-        return CartResponseDto.CartInfoResponseDto.builder()
-                .cartItems(cartItems)
-                .totalPrice(cart.getTotalPrice())
-                .build();
+        return CartResponseDto.CartInfoResponseDto.of(cart, cartItems);
     }
 
     @Override
@@ -74,14 +64,7 @@ public class CartServiceImpl implements CartService{
         if(existingItem != null) {
             existingItem.updateQuantity(existingItem.getQuantity() + requestDto.getQuantity());
         } else {
-            //아니면 빌더패턴으로 cartItem 생성
-            CartItem newCartItem = CartItem.builder()
-                    .cart(cart)
-                    .menuId(requestDto.getMenuId())
-                    .quantity(requestDto.getQuantity())
-                    .selectedOptions(requestDto.getSelectedOptions())
-                    .build();
-            //cart에 추가
+            CartItem newCartItem = CartItem.createCartItem(cart, requestDto.getMenuId(), selectedOptions, requestDto.getQuantity());
             cart.addCartItem(newCartItem);
         }
 
@@ -94,7 +77,7 @@ public class CartServiceImpl implements CartService{
 
         //[검증] 내 장바구니 안에 해당 상품이 존재하는지 찾기(중복삭제 방지와 타인 장바구니 조작 방지)
         CartItem cartItem = cart.getCartItems().stream()
-                .filter(item -> item.getId().equals(cartItemId))
+                .filter(item -> item.getCartItemId().equals(cartItemId))
                 .findFirst()
                 .orElseThrow(() -> new GeneralException(CartErrorCode.CART_ITEM_NOT_FOUND));
 
@@ -108,7 +91,7 @@ public class CartServiceImpl implements CartService{
 
         //[검증] 내 장바구니 안에 해당 상품이 존재하는지 찾기(중복삭제 방지와 타인 장바구니 조작 방지)
         CartItem cartItem = cart.getCartItems().stream()
-                .filter(item -> item.getId().equals(cartItemId))
+                .filter(item -> item.getCartItemId().equals(cartItemId))
                 .findFirst()
                 .orElseThrow(() -> new GeneralException(CartErrorCode.CART_ITEM_NOT_FOUND));
 
