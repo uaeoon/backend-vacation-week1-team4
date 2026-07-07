@@ -3,6 +3,8 @@ package mutsa.team4.cart.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import mutsa.team4.cart.domain.Cart;
+import mutsa.team4.cart.domain.CartItem;
 
 import java.util.List;
 
@@ -14,6 +16,12 @@ public class CartResponseDto {
     public static class CartInfoResponseDto {
         private List<CartItemInfoResponseDto> cartItems;
         private Long totalPrice;
+        public static CartInfoResponseDto of(Cart cart, List<CartItemInfoResponseDto> cartItems){
+            return CartInfoResponseDto.builder()
+                    .cartItems(cartItems)
+                    .totalPrice(cart.getTotalPrice())
+                    .build();
+        }
     }
 
     @Builder
@@ -27,5 +35,16 @@ public class CartResponseDto {
         private List<String> selectedOptionsNames;
         private Long expectPrice;
         private Long quantity;
+        public static CartItemInfoResponseDto of(CartItem cartItem, String menuName, List<String> selectedOptionsNames){
+            return CartItemInfoResponseDto.builder()
+                    .cartItemId(cartItem.getCartItemId())
+                    .menuId(cartItem.getMenuId())
+                    .menuName(menuName)
+                    .selectedOptionsNames(selectedOptionsNames)
+                    .expectPrice(cartItem.getExpectPrice())
+                    .quantity(cartItem.getQuantity())
+                    .build();
+        }
     }
+
 }

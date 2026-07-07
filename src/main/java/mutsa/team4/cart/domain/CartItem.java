@@ -11,12 +11,12 @@ import java.util.List;
 @Getter
 @Entity
 //service에서 사용하기 위한 builder 어노테이션 추가
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long cartItemId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id", nullable = false)
@@ -48,5 +48,15 @@ public class CartItem {
             throw new GeneralException(CartErrorCode.INVALID_QUANTITY);
         }
         this.quantity = quantity;
+    }
+
+    public static CartItem createCartItem(Cart cart, Long menuId, List<Long> selectedOptions, Long quantity) {
+        return CartItem.builder()
+                .cart(cart)
+                .menuId(menuId)
+                .selectedOptions(selectedOptions)
+                .quantity(quantity)
+                .build();
+        //domain 과 Dto는 분리를 지양, requestDto.get~으로 꺼내오는 건 안 좋음
     }
 }

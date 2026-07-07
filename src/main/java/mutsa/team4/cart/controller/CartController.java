@@ -9,7 +9,7 @@ import mutsa.team4.global.apiPayload.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/cart")
+@RequestMapping("/api/v1/carts")
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
