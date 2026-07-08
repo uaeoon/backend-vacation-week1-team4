@@ -55,8 +55,11 @@ public class OrderServiceImpl implements OrderService{
         List<OrderItem> orderItems = new ArrayList<>();
         for(CartItem cartItem : cartItems){
             //4-1 실제 메뉴 상세 정보 조회
-            Menu menu = menuRepository.findById(cartItem.getMenuId())
-                    .orElseThrow(() -> new GeneralException(OrderErrorCode.MENU_NOT_FOUND));
+            Menu menu = cartItem.getMenu();
+            if (menu == null) {
+                throw new GeneralException(OrderErrorCode.MENU_NOT_FOUND);
+            }
+
             //4-2 옵션 엔티티 정보 조회
             List<MenuOption> menuOptions = menuOptionRepository.findAllById(cartItem.getSelectedOptions());
             //4-3 이름 추출 및 추가 금액 합산
@@ -73,7 +76,7 @@ public class OrderServiceImpl implements OrderService{
             totalOrderPrice += itemRowTotalPrice;
             //4-6 OrderItem 조립
             OrderItem orderItem = OrderItem.createOrderItem(
-                    cartItem.getMenuId(),
+                    menu.getMenuId(),
                     menu.getMenuName(),
                     cartItem.getQuantity(),
                     itemRowTotalPrice,

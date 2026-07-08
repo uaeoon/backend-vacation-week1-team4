@@ -55,7 +55,7 @@ public class CartServiceImpl implements CartService{
                             .mapToLong(MenuOption::getOptionPrice)
                             .sum();
                     //수량까지 곱한 가격
-                    long actualPrice = menu.getPrice() + optionPrice * item.getQuantity();
+                    long actualPrice = (menu.getPrice() + optionPrice)   * item.getQuantity();
                     return CartResponseDto.CartItemInfoResponseDto.of(
                             item,
                             menu.getMenuName(),

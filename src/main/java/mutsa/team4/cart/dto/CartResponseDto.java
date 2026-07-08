@@ -38,7 +38,7 @@ public class CartResponseDto {
         public static CartItemInfoResponseDto of(CartItem cartItem, String menuName, List<String> selectedOptionsNames, Long expectPrice){
             return CartItemInfoResponseDto.builder()
                     .cartItemId(cartItem.getCartItemId())
-                    .menuId(cartItem.getMenuId())
+                    .menuId(cartItem.getMenu().getMenuId())
                     .menuName(menuName)
                     .selectedOptionsNames(selectedOptionsNames)
                     .expectPrice(expectPrice)
