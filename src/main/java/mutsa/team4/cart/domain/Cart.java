@@ -30,13 +30,6 @@ public class Cart {
         return cart;
     }
 
-    //장바구니 음식 금액 총합
-    public Long getTotalPrice() {
-        return this.cartItems.stream()
-                .mapToLong(CartItem::getExpectPrice)
-                .sum();
-    }
-
     //장바구니 아이템 삭제
     public void removeCartItem(CartItem cartItem) {
         this.cartItems.remove(cartItem);

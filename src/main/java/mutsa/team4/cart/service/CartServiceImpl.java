@@ -8,6 +8,11 @@ import mutsa.team4.cart.dto.CartRequestDto;
 import mutsa.team4.cart.dto.CartResponseDto;
 import mutsa.team4.cart.repository.CartRepository;
 import mutsa.team4.global.exception.GeneralException;
+import mutsa.team4.store.code.StoreErrorCode;
+import mutsa.team4.store.domain.Menu;
+import mutsa.team4.store.domain.MenuOption;
+import mutsa.team4.store.repository.MenuOptionRepository;
+import mutsa.team4.store.repository.MenuRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +26,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class CartServiceImpl implements CartService{
     private final CartRepository cartRepository;
+    private final MenuRepository menuRepository;
+    private final MenuOptionRepository menuOptionRepository;
 
     //장바구니 조회
     @Override
@@ -31,12 +38,36 @@ public class CartServiceImpl implements CartService{
                 .orElseGet(() -> cartRepository.save(Cart.createCart(memberId)));
                 //장바구니 없을 경우 생성해서 리턴 -> 나중에 회원 가입시 자동 생성 관계로 변경필요?
 
-        //CartItem 꺼내서 Dto로 포장
         List<CartResponseDto.CartItemInfoResponseDto> cartItems = cart.getCartItems().stream()
-                .map(item -> CartResponseDto.CartItemInfoResponseDto.of(item,"임시 메뉴 이름", Collections.emptyList()))
+                .map(item ->
+                {
+                    //메뉴 정보 조회
+                    Menu menu = item.getMenu();
+                    if(menu == null){
+                        return CartResponseDto.CartItemInfoResponseDto.of(item, "삭제된 상품입니다", Collections.emptyList(), 0L);
+                    }
+                    //옵션 정보 조회
+                    List<MenuOption> menuOptions = menuOptionRepository.findAllById(item.getSelectedOptions());
+                    List<String> selectedOptionsNames = menuOptions.stream()
+                            .map(MenuOption::getOptionName)
+                            .collect(Collectors.toList());
+                    long optionPrice = menuOptions.stream()
+                            .mapToLong(MenuOption::getOptionPrice)
+                            .sum();
+                    //수량까지 곱한 가격
+                    long actualPrice = (menu.getPrice() + optionPrice)   * item.getQuantity();
+                    return CartResponseDto.CartItemInfoResponseDto.of(
+                            item,
+                            menu.getMenuName(),
+                            selectedOptionsNames,
+                            actualPrice);
+                })
                 .collect(Collectors.toList());
-        //최종 response 리턴
-        return CartResponseDto.CartInfoResponseDto.of(cart, cartItems);
+        long totalPrice = cartItems.stream()
+                .mapToLong(CartResponseDto.CartItemInfoResponseDto::getExpectPrice)
+                .sum();
+
+        return CartResponseDto.CartInfoResponseDto.of(cartItems, totalPrice);
     }
 
     @Override
@@ -51,7 +82,7 @@ public class CartServiceImpl implements CartService{
 
         //장바구니 동일 조합 메뉴 확인
         CartItem existingItem = cart.getCartItems().stream()
-                .filter(item -> item.getMenuId().equals(requestDto.getMenuId()))
+                .filter(item -> item.getMenu() != null && item.getMenu().getMenuId().equals(requestDto.getMenuId()))
                 .filter(item -> {
                     List<Long> itemOptions = new ArrayList<>(item.getSelectedOptions());
                     Collections.sort(itemOptions);
@@ -64,7 +95,9 @@ public class CartServiceImpl implements CartService{
         if(existingItem != null) {
             existingItem.updateQuantity(existingItem.getQuantity() + requestDto.getQuantity());
         } else {
-            CartItem newCartItem = CartItem.createCartItem(cart, requestDto.getMenuId(), selectedOptions, requestDto.getQuantity());
+            Menu menu = menuRepository.findById(requestDto.getMenuId())
+                    .orElseThrow(() -> new GeneralException(StoreErrorCode.STORE_NOT_FOUND));
+            CartItem newCartItem = CartItem.createCartItem(cart, menu, selectedOptions, requestDto.getQuantity());
             cart.addCartItem(newCartItem);
         }
 

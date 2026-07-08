@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import mutsa.team4.cart.code.CartErrorCode;
 import mutsa.team4.global.exception.GeneralException;
+import mutsa.team4.store.domain.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 //service에서 사용하기 위한 builder 어노테이션 추가
 @Builder(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +23,9 @@ public class CartItem {
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @Column(nullable = false)
-    private Long menuId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", nullable = false)
+    private Menu menu;
     //menu domain 개발 후 연관관계 매핑
 
     @ElementCollection
@@ -33,15 +35,11 @@ public class CartItem {
     )
     //서브테이블에 들어갈 실제 밸류 네임
     @Column(name = "option_id")
+    @Builder.Default
     private List<Long> selectedOptions = new ArrayList<>();
 
     @Column(nullable = false)
     private Long quantity;
-
-    //수량 + 옵션 고려한 메뉴당 가격
-    public Long getExpectPrice(){
-        return 0L; //product 도메인 연동 후 구현
-    }
 
     public void updateQuantity(Long quantity){
         if(quantity < 1){
@@ -50,10 +48,10 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public static CartItem createCartItem(Cart cart, Long menuId, List<Long> selectedOptions, Long quantity) {
+    public static CartItem createCartItem(Cart cart, Menu menu, List<Long> selectedOptions, Long quantity) {
         return CartItem.builder()
                 .cart(cart)
-                .menuId(menuId)
+                .menu(menu)
                 .selectedOptions(selectedOptions)
                 .quantity(quantity)
                 .build();
