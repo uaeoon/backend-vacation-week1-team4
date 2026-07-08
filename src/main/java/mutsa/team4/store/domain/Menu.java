@@ -16,7 +16,7 @@ public class Menu {
     @Column(nullable = false)
     private String menuName;
     @Column(nullable = false)
-    private long price;;
+    private long price;
     private String description;
 
     @ManyToOne (fetch = FetchType.LAZY)
