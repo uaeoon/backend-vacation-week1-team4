@@ -24,7 +24,7 @@ public class OptionGroup {
     @JoinColumn(name = "menu_id", nullable = false)
     private Menu menu;
 
-    public static OptionGroup create(Menu menu, String title, Boolean essential, Long maxSelectCount) {
+    public static OptionGroup create(Menu menu, String title, boolean essential, long maxSelectCount) {
         if (menu == null) {
             throw new IllegalArgumentException("메뉴가 존재하지 않습니다.");
         }
