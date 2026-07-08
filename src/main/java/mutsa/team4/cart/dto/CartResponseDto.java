@@ -3,7 +3,6 @@ package mutsa.team4.cart.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import mutsa.team4.cart.domain.Cart;
 import mutsa.team4.cart.domain.CartItem;
 
 import java.util.List;

@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 //service에서 사용하기 위한 builder 어노테이션 추가
 @Builder(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CartItem {
     @Id@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,6 +35,7 @@ public class CartItem {
     )
     //서브테이블에 들어갈 실제 밸류 네임
     @Column(name = "option_id")
+    @Builder.Default
     private List<Long> selectedOptions = new ArrayList<>();
 
     @Column(nullable = false)
