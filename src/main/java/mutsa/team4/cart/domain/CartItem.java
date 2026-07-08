@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import mutsa.team4.cart.code.CartErrorCode;
 import mutsa.team4.global.exception.GeneralException;
+import mutsa.team4.store.domain.Menu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +23,9 @@ public class CartItem {
     @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @Column(nullable = false)
-    private Long menuId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_id", nullable = false)
+    private Menu menu;
     //menu domain 개발 후 연관관계 매핑
 
     @ElementCollection
@@ -38,11 +40,6 @@ public class CartItem {
     @Column(nullable = false)
     private Long quantity;
 
-    //수량 + 옵션 고려한 메뉴당 가격
-    public Long getExpectPrice(){
-        return 0L; //product 도메인 연동 후 구현
-    }
-
     public void updateQuantity(Long quantity){
         if(quantity < 1){
             throw new GeneralException(CartErrorCode.INVALID_QUANTITY);
@@ -50,10 +47,10 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public static CartItem createCartItem(Cart cart, Long menuId, List<Long> selectedOptions, Long quantity) {
+    public static CartItem createCartItem(Cart cart, Menu menu, List<Long> selectedOptions, Long quantity) {
         return CartItem.builder()
                 .cart(cart)
-                .menuId(menuId)
+                .menu(menu)
                 .selectedOptions(selectedOptions)
                 .quantity(quantity)
                 .build();

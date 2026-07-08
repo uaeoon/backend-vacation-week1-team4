@@ -5,5 +5,5 @@ import mutsa.team4.order.dto.OrderResponseDto;
 
 public interface OrderService {
 
-    OrderResponseDto.OrderInfoResponseDto createOrder(Long memberId, OrderRequestDto.createOrderRequestDto orderRequestDto);
+    OrderResponseDto.OrderInfoResponseDto createOrder(Long memberId, OrderRequestDto.CreateOrderRequestDto orderRequestDto);
 }

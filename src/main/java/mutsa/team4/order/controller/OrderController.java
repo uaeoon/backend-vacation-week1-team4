@@ -18,7 +18,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ApiResponse<OrderResponseDto.OrderInfoResponseDto> createOrder(@RequestBody@Valid OrderRequestDto.createOrderRequestDto orderRequestDto) {
+    public ApiResponse<OrderResponseDto.OrderInfoResponseDto> createOrder(@RequestBody@Valid OrderRequestDto.CreateOrderRequestDto orderRequestDto) {
         //추후 멤버 기능 구현시 수정
         Long memberId = 1L;
         OrderResponseDto.OrderInfoResponseDto response = orderService.createOrder(memberId, orderRequestDto);

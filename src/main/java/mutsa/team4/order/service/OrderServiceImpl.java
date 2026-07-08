@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     //1. 장바구니 조회
-    public OrderResponseDto.OrderInfoResponseDto createOrder(Long memberId, OrderRequestDto.createOrderRequestDto orderRequestDto) {
+    public OrderResponseDto.OrderInfoResponseDto createOrder(Long memberId, OrderRequestDto.CreateOrderRequestDto orderRequestDto) {
         Cart cart = cartRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new GeneralException(OrderErrorCode.CART_NOT_FOUND));
         //2. 장바구니 빈 값 검증-> 비어있으면 에러
