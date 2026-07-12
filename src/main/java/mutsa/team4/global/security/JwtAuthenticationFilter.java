@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
 
         // 2. Authorization Header 없거나 Bearer 형식 아니면 인증 처리 x -> 다음 필터로 넘김
-        if (authorizationHeader != null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith(BEARER_PREFIX)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -47,10 +47,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwtTokenProvider.validateToken(token);
 
         // 5. 토큰에서 memberId 추출
-        Long membeerId = jwtTokenProvider.getMemberId(token);
+        Long memberId = jwtTokenProvider.getMemberId(token);
 
         // 6. 인증된 사용자 정보 담는 AuthMember 객체 만듦
-        AuthMember authMember = new AuthMember(membeerId);
+        AuthMember authMember = new AuthMember(memberId);
 
         // 7. Spring Security가 이해할 수 있는 Authentication 객체 만듦
         UsernamePasswordAuthenticationToken authentication =
