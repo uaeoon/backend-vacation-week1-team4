@@ -27,11 +27,11 @@ public class MemberResponseDto {
     @Getter
     @Builder
     @AllArgsConstructor
-    public static class loginResponseDto{
+    public static class MemberLoginResponseDto {
         private String accessToken;
 
-        public static loginResponseDto of(String accessToken){
-            return loginResponseDto.builder()
+        public static MemberLoginResponseDto of(String accessToken){
+            return MemberLoginResponseDto.builder()
                     .accessToken(accessToken)
                     .build();
         }
