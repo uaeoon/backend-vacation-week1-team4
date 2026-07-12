@@ -18,10 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     // 어떤 요청 허용할지, 어떤 요청에 인증을 요구할지, 어떤 필터를 사용할지
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) throws Exception {
         http
                 // 서버가 세션 사용하지 않으므로 CSRF 보호 비활성화
                 .csrf(csrf -> csrf.disable())
@@ -47,6 +48,10 @@ public class SecurityConfig {
 
                         // 위에서 허용한 요청 외에는 인증 필요
                         .anyRequest().authenticated()
+                )
+                // 인증되지 않은 사용자가 인증 필요한 API에 접근 시 실행
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 )
                 // JWT 인증 필터 등록
                 .addFilterBefore(
