@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        // 3. Bearer 접두사 제거 후 순서 JWT 문자열만 추출
+        // 3. Bearer 접두사 제거 후 순수 JWT 문자열만 추출
         String token = authorizationHeader.substring(BEARER_PREFIX.length());
 
         // 4. 토큰 검증
