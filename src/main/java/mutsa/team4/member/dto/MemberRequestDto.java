@@ -9,7 +9,7 @@ import lombok.Setter;
 public class MemberRequestDto {
 
     @Getter
-    public static class SingupRequestDto {
+    public static class SignupRequestDto {
         @NotBlank(message = "이름은 필수 입력 값입니다.")
         private String name;
 
