@@ -110,6 +110,7 @@ public class SecurityConfig {
                 "Authorization"
         ));
 
+        configuration.setAllowCredentials(true);
         // 모든 API 경로에 Cors 정책 적용
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

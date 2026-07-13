@@ -5,6 +5,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import mutsa.team4.global.apiPayload.ApiResponse;
+import mutsa.team4.global.apiPayload.code.status.GeneralErrorCode;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -21,6 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private static final String BEARER_PREFIX = "Bearer ";
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
     // 모든 HTTP 요청마다 실행되는 필터
     // Authorization Header에 담긴 JWT 검증 -> 인증된 사용자 정보 SecurityContext에 저장
@@ -44,7 +48,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = authorizationHeader.substring(BEARER_PREFIX.length());
 
         // 4. 토큰 검증
-        jwtTokenProvider.validateToken(token);
+        if (!jwtTokenProvider.validateToken(token)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json;charset=UTF-8");
+
+            objectMapper.writeValue(
+                    response.getWriter(),
+                    ApiResponse.onFailure(
+                            GeneralErrorCode.UNAUTHORIZED,
+                            "유효하지 않은 토큰입니다."
+                    )
+            );
+            return;
+        }
 
         // 5. 토큰에서 memberId 추출
         Long memberId = jwtTokenProvider.getMemberId(token);
