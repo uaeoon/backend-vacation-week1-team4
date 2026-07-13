@@ -1,6 +1,8 @@
 package mutsa.team4.member.service;
 
 import lombok.RequiredArgsConstructor;
+import mutsa.team4.credit.domain.Credit;
+import mutsa.team4.credit.repository.CreditRepository;
 import mutsa.team4.global.exception.GeneralException;
 import mutsa.team4.global.security.JwtTokenProvider;
 import mutsa.team4.member.code.MemberErrorCode;
@@ -19,6 +21,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CreditRepository creditRepository;
 
     @Override
     public MemberResponseDto.MemberInfoResponseDto signup(MemberRequestDto.SignupRequestDto requestDto) {
@@ -32,6 +35,9 @@ public class MemberServiceImpl implements MemberService{
                 requestDto.getEmail(),
                 encodedPassword);
         Member savedMember = memberRepository.save(member);
+
+        Credit credit = Credit.create(savedMember.getMemberId());
+        creditRepository.save(credit);
 
         return MemberResponseDto.MemberInfoResponseDto.of(
                 savedMember.getMemberId(),
