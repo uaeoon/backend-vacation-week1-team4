@@ -5,7 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import mutsa.team4.global.apiPayload.ApiResponse;
 import mutsa.team4.global.apiPayload.code.status.GeneralErrorCode;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
