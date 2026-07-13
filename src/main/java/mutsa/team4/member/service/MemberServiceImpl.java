@@ -1,6 +1,8 @@
 package mutsa.team4.member.service;
 
 import lombok.RequiredArgsConstructor;
+import mutsa.team4.cart.domain.Cart;
+import mutsa.team4.cart.repository.CartRepository;
 import mutsa.team4.credit.domain.Credit;
 import mutsa.team4.credit.repository.CreditRepository;
 import mutsa.team4.global.exception.GeneralException;
@@ -22,6 +24,7 @@ public class MemberServiceImpl implements MemberService{
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final CreditRepository creditRepository;
+    private final CartRepository cartRepository;
 
     @Override
     public MemberResponseDto.MemberInfoResponseDto signup(MemberRequestDto.SignupRequestDto requestDto) {
@@ -36,8 +39,12 @@ public class MemberServiceImpl implements MemberService{
                 encodedPassword);
         Member savedMember = memberRepository.save(member);
 
+        //현재 도메인끼리 매핑 없이 MemberId를 받아와서 생성하기 때문에 회원탈퇴 시에 장바구니와 크레딧이 남아있게 됨
+        //추후 회원탈퇴 로직 구현시에 같이 지워줘야함.
         Credit credit = Credit.create(savedMember.getMemberId());
         creditRepository.save(credit);
+        Cart cart = Cart.createCart(savedMember.getMemberId());
+        cartRepository.save(cart);
 
         return MemberResponseDto.MemberInfoResponseDto.of(
                 savedMember.getMemberId(),
