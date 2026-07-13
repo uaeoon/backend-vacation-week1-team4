@@ -47,7 +47,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/stores/**").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
@@ -65,11 +64,6 @@ public class SecurityConfig {
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
                 );
-
-        // H2 Console을 위한 설정
-        http.headers(headers ->
-                headers.frameOptions(frameOptions -> frameOptions.disable())
-        );
 
         return http.build();
     }
