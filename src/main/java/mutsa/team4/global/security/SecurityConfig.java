@@ -89,6 +89,9 @@ public class SecurityConfig {
                 "http://localhost:5173"
         ));
 
+        //3600초 동안 예비 요청 결과 캐싱 허용
+        configuration.setMaxAge(3600L);
+
         // 프론트에서 쓸 HTTP Method 허용
         configuration.setAllowedMethods(List.of(
                 "GET",
