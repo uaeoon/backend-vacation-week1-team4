@@ -22,7 +22,7 @@ public class SecurityConfig {
 
     // 어떤 요청 허용할지, 어떤 요청에 인증을 요구할지, 어떤 필터를 사용할지
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // 서버가 세션 사용하지 않으므로 CSRF 보호 비활성화
                 .csrf(csrf -> csrf.disable())
