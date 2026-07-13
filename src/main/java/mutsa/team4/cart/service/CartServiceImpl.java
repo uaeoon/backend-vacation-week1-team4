@@ -31,12 +31,10 @@ public class CartServiceImpl implements CartService{
 
     //장바구니 조회
     @Override
-    //추후 멤버 도메인 생기면 읽기전용으로 바꾸기(현재 service 레이어에서 카트 없으면 생성해주는 로직 있어서 충돌남
-//    @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public CartResponseDto.CartInfoResponseDto getCart(Long memberId) {
         Cart cart = cartRepository.findByMemberId(memberId)
-                .orElseGet(() -> cartRepository.save(Cart.createCart(memberId)));
-                //장바구니 없을 경우 생성해서 리턴 -> 나중에 회원 가입시 자동 생성 관계로 변경필요?
+                .orElseThrow(() -> new GeneralException(CartErrorCode.CART_NOT_FOUND));
 
         List<CartResponseDto.CartItemInfoResponseDto> cartItems = cart.getCartItems().stream()
                 .map(item ->
