@@ -11,6 +11,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -22,12 +28,12 @@ public class SecurityConfig {
 
     // 어떤 요청 허용할지, 어떤 요청에 인증을 요구할지, 어떤 필터를 사용할지
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 // 서버가 세션 사용하지 않으므로 CSRF 보호 비활성화
                 .csrf(csrf -> csrf.disable())
 
-                // cors 설정 비활성화
+                // CorsConfigurationSource Bean에 정의한 Cors 정책 적용
                 .cors(cors -> {})
 
                 // 매 요청마다 Authorization Header의 토큰으로 사용자 인증
@@ -37,6 +43,7 @@ public class SecurityConfig {
 
                 // 요청별 접근 권한
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/signup").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/stores/**").permitAll()
@@ -71,5 +78,46 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        // 프론트 로컬 개발 서버 주소 허용
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:5173"
+        ));
+
+        //3600초 동안 예비 요청 결과 캐싱 허용
+        configuration.setMaxAge(3600L);
+
+        // 프론트에서 쓸 HTTP Method 허용
+        configuration.setAllowedMethods(List.of(
+                "GET",
+                "POST",
+                "PATCH",
+                "PUT",
+                "DELETE",
+                "OPTIONS"
+        ));
+
+        // Authorization Header 허용
+        configuration.setAllowedHeaders(List.of(
+            "Authorization",
+            "Content-Type"
+        ));
+
+        // 프론트에서 Authorization Header 읽을 수 있도록 노출
+        configuration.setExposedHeaders(List.of(
+                "Authorization"
+        ));
+
+        configuration.setAllowCredentials(true);
+        // 모든 API 경로에 Cors 정책 적용
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }
