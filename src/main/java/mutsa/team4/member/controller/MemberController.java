@@ -8,10 +8,7 @@ import mutsa.team4.member.dto.MemberRequestDto;
 import mutsa.team4.member.dto.MemberResponseDto;
 import mutsa.team4.member.service.MemberService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -21,7 +18,7 @@ public class MemberController {
 
     //1. 회원가입
     @PostMapping("/auth/signup")
-    public ApiResponse<MemberResponseDto.MemberInfoResponseDto> signup(@RequestBody@Valid MemberRequestDto.SignupRequestDto requestDto) {
+    public ApiResponse<MemberResponseDto.MemberInfoResponseDto> signup입(@RequestBody@Valid MemberRequestDto.SignupRequestDto requestDto) {
         MemberResponseDto.MemberInfoResponseDto response = memberService.signup(requestDto);
         return ApiResponse.onSuccess("회원가입에 성공했습니다.", response);
     }
@@ -33,7 +30,7 @@ public class MemberController {
         return ApiResponse.onSuccess("로그인에 성공했습니다.", response);
     }
     //3. 내 정보 조회(JWT 토큰 기반)
-    @PostMapping("/members/me")
+    @GetMapping("/members/me")
     public ApiResponse<MemberResponseDto.MemberInfoResponseDto> getMemberInfo(@AuthenticationPrincipal AuthMember authMember) {
         Long memberId = authMember.getMemberId();
         MemberResponseDto.MemberInfoResponseDto response = memberService.getMemberInfo(memberId);

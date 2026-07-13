@@ -49,7 +49,7 @@ public class MemberServiceImpl implements MemberService{
         if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())){
             throw new GeneralException(MemberErrorCode.INVALID_PASSWORD);
         }
-        //3. 토큰 발금
+        //3. 토큰 발급
         String accessToken = jwtTokenProvider.createAccessToken(member.getMemberId());
         return MemberResponseDto.MemberLoginResponseDto.of(accessToken);
     }

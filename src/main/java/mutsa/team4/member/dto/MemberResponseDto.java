@@ -29,7 +29,8 @@ public class MemberResponseDto {
     @AllArgsConstructor
     public static class MemberLoginResponseDto {
         private String accessToken;
-
+        @Builder.Default
+        private String tokenType = "Bearer";
         public static MemberLoginResponseDto of(String accessToken){
             return MemberLoginResponseDto.builder()
                     .accessToken(accessToken)
