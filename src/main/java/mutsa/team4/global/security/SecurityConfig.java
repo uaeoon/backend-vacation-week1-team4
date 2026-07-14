@@ -80,7 +80,9 @@ public class SecurityConfig {
 
         // 프론트 로컬 개발 서버 주소 허용
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "https://ryeowon.shop",
+                "https://www.ryeowon.shop"
         ));
 
         //3600초 동안 예비 요청 결과 캐싱 허용
