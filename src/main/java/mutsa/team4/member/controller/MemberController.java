@@ -18,7 +18,7 @@ public class MemberController {
 
     //1. 회원가입
     @PostMapping("/auth/signup")
-    public ApiResponse<MemberResponseDto.MemberInfoResponseDto> signup입(@RequestBody@Valid MemberRequestDto.SignupRequestDto requestDto) {
+    public ApiResponse<MemberResponseDto.MemberInfoResponseDto> signup(@RequestBody@Valid MemberRequestDto.SignupRequestDto requestDto) {
         MemberResponseDto.MemberInfoResponseDto response = memberService.signup(requestDto);
         return ApiResponse.onSuccess("회원가입에 성공했습니다.", response);
     }
