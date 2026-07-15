@@ -5,8 +5,6 @@ import lombok.*;
 import mutsa.team4.credit.code.CreditErrorCode;
 import mutsa.team4.global.exception.GeneralException;
 
-import java.util.Set;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,11 +33,10 @@ public class Credit {
                 .build();
     }
 
-    private static final Set<Long> CHARGE_AMOUNTS =
-            Set.of(1_000L, 3_000L, 5_000L, 10_000L);
+    private static final long CHARGE_UNIT = 1_000L;
 
     public void charge(long amount) {
-        if (!CHARGE_AMOUNTS.contains(amount)) {
+        if (amount <= 0 || amount % CHARGE_UNIT != 0) {
             throw new GeneralException(
                     CreditErrorCode.INVALID_CHARGE_AMOUNT
             );
