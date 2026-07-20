@@ -1,5 +1,4 @@
 package mutsa.team4.member.domain;
-
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,16 +13,43 @@ public class Member {
 
     @Column
     private String name;
-    @Column(nullable = false, unique = true)
-    private String email;
     @Column(nullable = false)
+    private String email;
+    @Column
     private String password;
+
+    // 카카오 로그인을 위한 필드
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private LoginProvider provider;
+
+    public enum LoginProvider {
+        LOCAL,
+        KAKAO
+    }
+
+    @Column(nullable = false)
+    private String providerId;
+    @Column
+    private String nickname;
 
     public static Member createMember(String name, String email, String password) {
         return Member.builder()
                 .name(name)
                 .email(email)
                 .password(password)
+                .provider(LoginProvider.LOCAL)
+                .providerId(email)
+                .build();
+    }
+
+    public static Member createKakaoMember(String email, String nickname, String providerId) {
+        return Member.builder()
+                .name(nickname)
+                .email(email)
+                .nickname(nickname)
+                .provider(LoginProvider.KAKAO)
+                .providerId(providerId)
                 .build();
     }
 }

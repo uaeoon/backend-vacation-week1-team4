@@ -78,4 +78,25 @@ public class MemberServiceImpl implements MemberService{
                 member.getEmail()
         );
     }
+
+    @Override
+    public Member findOrCreateKakaoMember(String providerId, String email, String nickname) {
+        // 1. 기존 카카오 회원 조회
+        return memberRepository.findByProviderAndProviderId(Member.LoginProvider.KAKAO, providerId)
+                .orElseGet(() -> {
+                    // 2. 기존 회원 없을 시 카카오 회원 생성
+                    Member member = Member.createKakaoMember(email, nickname, providerId);
+                    Member savedMember = memberRepository.save(member);
+
+                    // 3. 신규 회원 크레딧 생성 및 장바구니 생성
+                    Credit credit = Credit.create(savedMember.getMemberId());
+                    creditRepository.save(credit);
+
+                    Cart cart = Cart.createCart(savedMember.getMemberId());
+                    cartRepository.save(cart);
+
+                    // 4. 저장된 회원 반환
+                    return savedMember;
+                });
+    }
 }
