@@ -30,6 +30,8 @@ public class Member {
 
     @Column(nullable = false)
     private String providerId;
+    @Column
+    private String nickname;
 
     public static Member createMember(String name, String email, String password) {
         return Member.builder()
@@ -45,6 +47,7 @@ public class Member {
         return Member.builder()
                 .name(nickname)
                 .email(email)
+                .nickname(nickname)
                 .provider(LoginProvider.KAKAO)
                 .providerId(providerId)
                 .build();
