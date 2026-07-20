@@ -17,8 +17,15 @@ public class KakaoAuthService {
     private final KakaoClient kakaoClient;
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
+
     @Value("${kakao.front-success-url}")
     private String frontSuccessUrl;
+
+    @Value("${kakao.client-id}")
+    private String clientId;
+
+    @Value("${kakao.redirect-uri}")
+    private String redirectUri;
 
     public String kakaoLogin(String code) {
         // 1. code로 카카오 토큰 받기
@@ -42,5 +49,12 @@ public class KakaoAuthService {
 
         // 6. 프론트 성공 URL 생성
         return frontSuccessUrl + "?accessToken=" + accessToken + "&tokenType=Bearer";
+    }
+
+    public String getKakaoLoginUrl() {
+        return "https://kauth.kakao.com/oauth/authorize"
+                + "?client_id=" + clientId
+                + "&redirect_uri=" + redirectUri
+                + "&response_type=code";
     }
 }
